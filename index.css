@@ -17,6 +17,19 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 20px;
+    touch-action: manipulation;
+    /* Prevent double-tap zoom */
+}
+
+/* Prevent iOS zoom on focus */
+input,
+textarea,
+select {
+    font-size: 16px !important;
+}
+
+button {
+    touch-action: manipulation;
 }
 
 .app-container {
@@ -77,6 +90,14 @@ body {
     margin-bottom: 15px;
     /* Moved margin here from container */
     margin-top: 0;
+    cursor: pointer;
+    /* Interactive */
+    touch-action: manipulation;
+    transition: opacity 0.1s;
+}
+
+.progress-wrapper:active {
+    opacity: 0.6;
 }
 
 .card-progress-container {
@@ -625,7 +646,16 @@ h2 {
 .auth-box h2 {
     color: #fff;
     font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.auth-subtitle {
+    color: #888;
+    font-size: 0.8rem;
+    margin-top: -5px;
     margin-bottom: 10px;
+    font-style: italic;
+    line-height: 1.2;
 }
 
 #auth-password {

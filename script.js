@@ -680,6 +680,13 @@ document.addEventListener('DOMContentLoaded', () => {
             card.prepend(progressWrapper);
         }
 
+        // Tap Progress to Reveal
+        progressWrapper.addEventListener('click', (e) => {
+            e.stopPropagation(); // Don't trigger card focus or other click logic
+            revealNext();
+            refocusCard(); // Keep focus for keyboard continuity
+        });
+
         // ... (updateProgress existing logic) ...
         function updateProgress() {
             const revealedCount = meaningfulSpans.filter(s => s.classList.contains('visible')).length;
