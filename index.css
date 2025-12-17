@@ -35,6 +35,19 @@ body {
 .tabs-nav {
     display: flex;
     gap: 10px;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
+    -webkit-overflow-scrolling: touch;
+    /* iOS smooth scrolling */
+}
+
+.tabs-nav::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari/Webkit */
 }
 
 .tab-button {
@@ -224,6 +237,8 @@ body {
     border-radius: 2px;
     transition: all 0.2s ease;
     cursor: pointer;
+    background-color: black;
+    color: black;
     /* Changed to pointer to indicate interactivity */
 }
 

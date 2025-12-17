@@ -796,6 +796,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const entry10Text = "Use of mirrors and gauges\nI check a mirror every 5 to 8 seconds looking for lane position, traffic conditions and mechanical problems. I substitute a mirror check, when traffic allows, with one of my primary gauges, oil or water looking for normal readings. When I check a mirror or gauge my next eye movement is back to the front. Never go mirror to mirror, gauge to gauge, mirror to gauge, gauge to mirror.\n*Why? Keeps eyes ahead of car.*.";
 
+    const entry5s1Text = "AIM HIGH IN STEERING\nHow do you do it?\nImaginary target - baseball/dartboard\nWhat does it do for you?\nCenters car in traffic lane: Safe path on turns\nKey Phrase\nREMEMBER, \"FIND A SAFE PATH WELL AHEAD.\"";
+
+    const entry5s2Text = "GET THE BIG PICTURE\nHow do you do it?\nHow wide and deep? What's in it? Objects and ground\nWhat does it do for you?\nKeeps you away from billboards Smooth stops and turns Buys time\nKey Phrase\nREMEMBER, \"STAY BACK AND SEE IT ALL\"";
+
+    const entry5s3Text = "KEEP YOUR EYES MOVING\nHow do you do it?\nMove eyes. Front - 2 seconds, Rear - 5 to 8 seconds\nWhat's does it do for you?\nKeeps you alive at intersections, keeps eyes ahead of car\nKey Phrase\nREMEMBER, \"SCAN - DON'T STARE\"";
+
+    const entry5s4Text = "LEAVE YOURSELF AN OUT\nHow do you do it?\nHave escape route, take path of least resistance\nWhat does it do for you?\nSpace on all four sides, but always in front\nKey Phrase\nREMEMBER, \"BE PREPARED, EXPECT THE UNEXPECTED\"";
+
+    const entry5s5Text = "MAKE SURE THEY SEE YOU\nHow do you do it?\nCommunicate in traffic - horn, lights, signals\nWhat does it do for you?\nEstablishes eye-to-eye contact\nKey Phrase\nREMEMBER, \"DON'T GAMBLE - USE YOUR HORN, LIGHTS, AND SIGNALS\"";
+
+    setupReveal('entry-5s-1', entry5s1Text); // Initialize 5s card
+    setupReveal('entry-5s-2', entry5s2Text); // Initialize 5s card 2
+    setupReveal('entry-5s-3', entry5s3Text); // Initialize 5s card 3
+    setupReveal('entry-5s-4', entry5s4Text); // Initialize 5s card 4
+    setupReveal('entry-5s-5', entry5s5Text); // Initialize 5s card 5
     setupReveal('entry-1', entry1Text);
     setupReveal('entry-2', entry2Text);
     setupReveal('entry-3', entry3Text);
