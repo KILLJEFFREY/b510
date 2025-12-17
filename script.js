@@ -483,25 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // 1. Read Button (Mapped to Focus/RSVP)
         const focusButton = document.createElement('button');
-        focusButton.textContent = '1. Read'; // Was "1) Focus"
+        focusButton.textContent = 'Read';
         focusButton.className = 'card-action-btn focus-btn';
         actionContainer.appendChild(focusButton);
 
         // 2. Audit Button (Mapped to Reveal All)
         const revealAllButton = document.createElement('button');
-        revealAllButton.textContent = '2. Audit'; // Was "2) Reveal"
+        revealAllButton.textContent = 'Audit';
         revealAllButton.className = 'card-action-btn reveal-btn';
         actionContainer.appendChild(revealAllButton);
 
         // 3. Test Button (New Placeholder)
         const testButton = document.createElement('button');
-        testButton.textContent = '3. Test';
+        testButton.textContent = 'Test';
         testButton.className = 'card-action-btn test-btn'; // New class
         actionContainer.appendChild(testButton);
 
         // 4. Reinforce Button (Mapped to Chunk)
         const chunkButton = document.createElement('button');
-        chunkButton.textContent = '4. Reinforce'; // Was "3) Chunk"
+        chunkButton.textContent = 'Reinforce';
         chunkButton.className = 'card-action-btn chunk-btn';
         actionContainer.appendChild(chunkButton);
 
@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Unchunk
                 const breaks = revealContainer.querySelectorAll('.chunk-br');
                 breaks.forEach(br => br.remove());
-                chunkButton.textContent = '4. Reinforce'; // Default state text
+                chunkButton.textContent = 'Reinforce'; // Default state text
                 isChunked = false;
             } else {
                 // Chunk
@@ -545,7 +545,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 });
-                chunkButton.textContent = '4. Unchunk';
+                chunkButton.textContent = 'Unchunk';
                 isChunked = true;
             }
         }
@@ -555,10 +555,10 @@ document.addEventListener('DOMContentLoaded', () => {
         function setReveal(shouldReveal) {
             if (shouldReveal) {
                 meaningfulSpans.forEach(span => span.classList.add('visible'));
-                revealAllButton.textContent = '2. Hide';
+                revealAllButton.textContent = 'Hide';
             } else {
                 meaningfulSpans.forEach(span => span.classList.remove('visible'));
-                revealAllButton.textContent = '2. Audit';
+                revealAllButton.textContent = 'Audit';
             }
             updateProgress();
         }
