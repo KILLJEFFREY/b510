@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const authError = document.getElementById('auth-error');
 
     // Simple hardcoded password - CHANGE THIS
-    const AUTH_PASSWORD = "password123";
+    const AUTH_PASSWORD = "independence";
 
     function checkAuth() {
         if (localStorage.getItem('isAuthenticated') === 'true') {
