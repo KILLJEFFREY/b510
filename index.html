@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leans RPCD 5s, 10s, & more!</title>
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <header class="header">
+            <nav class="tabs-nav">
+                <button class="tab-button active" data-tab="how-to">How to use</button>
+                <button class="tab-button" data-tab="5s">5s</button>
+                <button class="tab-button" data-tab="10s">10s</button>
+                <button class="tab-button" data-tab="pre-trip">Pre-trip</button>
+                <button class="tab-button" data-tab="start-stop">Start/stop</button>
+                <button class="tab-button" data-tab="timms">TIMMS</button>
+                <button class="tab-button" data-tab="driver-drill">Driver drill</button>
+                <div class="tab-indicator"></div>
+            </nav>
+        </header>
+        <main class="content-area">
+            <!-- How To Use Tab -->
+            <section id="content-how-to" class="tab-content active" style="overflow-y: auto;">
+                <div class="card" style="text-align: left; max-width: 800px; margin: 0 auto; line-height: 1.6;">
+                    <h2>How to Use This Trainer Effectively</h2>
+                    <p>This trainer is designed for verbatim recall. To extract maximum value from the current feature
+                        set, use the following operating procedure:</p>
+
+                    <h3>1. Treat Each Card as a Full Paragraph Unit</h3>
+                    <p>The card title is your cue. Before revealing anything, attempt a full cold recitation with all
+                        text hidden. Verbatim accuracy—not recognition—is the target metric.</p>
+
+                    <h3>2. Use Word-by-Word Reveal as an Audit Layer</h3>
+                    <p>Click or press space to reveal the text one word at a time. This surface is not for learning; it
+                        is for error detection. Identify where you substituted, reordered, or omitted words. These
+                        failures indicate weak segments that require targeted rehearsal.</p>
+
+                    <h3>3. Use Chunk Mode as a Mid-Level Support</h3>
+                    <p>The 7-word chunking tool provides a light scaffold. Use it only if you cannot maintain flow
+                        during a cold attempt. Forcing dependence on it reduces long-term retention.</p>
+
+                    <h3>4. Track Internal Progress, Not the Progress Bar</h3>
+                    <p>The progress bar reflects coverage, not mastery. The real milestone is: <strong>100% correct
+                            recitation while the card is at 0% revealed.</strong></p>
+
+                    <h3>5. Run Cards Forward in One Pass</h3>
+                    <p>Move sequentially through cards, overlapping cognitive load across paragraphs. This approximates
+                        a forward-run methodology.</p>
+
+                    <h3>6. Implement Reverse Runs Manually</h3>
+                    <p>Once forward recall is stable, manually run cards in reverse order (N → 1). This builds
+                        structural recall and eliminates flow-dependence.</p>
+
+                    <h3>7. Space Sessions According to Retention Best Practices</h3>
+                    <ul>
+                        <li>Initial session → Day 1 reactivation</li>
+                        <li>Day 3–4 stability check</li>
+                        <li>Day 7–10 consolidation</li>
+                        <li>Day 30 retention audit</li>
+                    </ul>
+                    <p>Spacing impacts consolidation more than session length.</p>
+
+                    <h3>8. For Stress-Proofing, Add Mild Load Externally</h3>
+                    <p>Because the trainer does not yet simulate stress, you must impose it yourself:</p>
+                    <ul>
+                        <li>Stand or shift posture</li>
+                        <li>Apply time pressure</li>
+                        <li>Use partial cues (title only)</li>
+                        <li>Attempt recitation immediately after a brief distraction</li>
+                    </ul>
+                    <p>Avoid artificial irritation or sensory punishment—they degrade recall.</p>
+
+                    <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
+
+                    <h2>Upcoming Improvements & Planned Enhancements</h2>
+                    <p>This trainer will evolve from a recall surface into a full-stack memorization workflow. Planned
+                        enhancements follow the method we established:</p>
+
+                    <h3>1. Meaning-Unit Segmentation (Semantic Chunking)</h3>
+                    <p>Automatic division of each paragraph into 3–7 meaning-units, each representing a complete idea.
+                        Enables precision recall rather than word-only flow.</p>
+
+                    <h3>2. Cue Generation (Per-Unit Triggers)</h3>
+                    <p>3–5 word cues generated automatically for each meaning-unit to optimize retrieval under load.</p>
+
+                    <h3>3. Guided Progressive Rebuild</h3>
+                    <p>Structured 1→2→3→N recall passes with forced recall-first behavior, eliminating dependency on
+                        continual reveal.</p>
+
+                    <h3>4. Reverse-Run Mode</h3>
+                    <p>Built-in N→1 mode to stabilize order integrity and prevent dependence on forward rhythm.</p>
+
+                    <h3>5. Dropout Drills</h3>
+                    <p>Automated surfacing of weak segments based on your failure points. Focuses practice where
+                        cognitive payoff is highest.</p>
+
+                    <h3>6. Stress-Training Mode</h3>
+                    <p>Mild, controlled interference conditions (partial cues, time-limited prompts, simple dual-task
+                        demands). No flashing, no loud audio, no irritation.</p>
+
+                    <h3>7. Session Tracking & Spaced Scheduling</h3>
+                    <p>Local storage of performance, prompting reactivation at 24 hours, 72 hours, and long-term
+                        intervals.</p>
+
+                    <h3>8. Cold-Run Scoring</h3>
+                    <p>Formalized scoring for zero-visibility recitations, allowing objective measurement of mastery
+                        across sessions.</p>
+                </div>
+            </section>
+
+            <section id="content-5s" class="tab-content">
+                <div class="card">
+                    <h2>5s Content</h2>
+                    <p>Placeholder for 5s content.</p>
+                </div>
+            </section>
+
+            <section id="content-10s" class="tab-content">
+                <div class="entries-grid">
+                    <div class="card interactive-card" id="entry-1">
+                        <h2>Entry 1: Clearing intersections</h2>
+                        <p class="reveal-text">
+                            <!-- Content will be injected by JS to wrapping words easily, or pre-rendered here. -->
+                        </p>
+                    </div>
+                    <!-- Placeholders for other entries -->
+                    <div class="card interactive-card" id="entry-2">
+                        <h2>Entry 2: When stopped in traffic</h2>
+                        <p class="reveal-text">
+                            <!-- Text injected by JS -->
+                        </p>
+
+                    </div>
+                    <div class="card interactive-card" id="entry-3">
+                        <h2>Entry 3: Count one-two-three after vehicle ahead has started to move</h2>
+                        <p class="reveal-text">
+                            <!-- Text injected by JS -->
+                        </p>
+                    </div>
+                    <div class="card interactive-card" id="entry-4">
+                        <h2>Entry 4: Four to six second following time for speeds up to 30 MPH, 6-8 seconds for speeds
+                            over
+                            30 MPH</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-5">
+                        <h2>Entry 5: Eight to twelve seconds eye-lead time</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-6">
+                        <h2>Entry 6: Scan steering wheels</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-7">
+                        <h2>Entry 7: Stale green lights</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-8">
+                        <h2>Entry 8: Eye contact</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-9">
+                        <h2>Entry 9: Pulling from curb</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                    <div class="card interactive-card" id="entry-10">
+                        <h2>Entry 10: Use of mirrors and gauges</h2>
+                        <p class="reveal-text"></p>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="content-pre-trip" class="tab-content">
+                <div class="card">
+                    <h2>Pre-trip Content</h2>
+                    <p>Placeholder for Pre-trip checklist or entries.</p>
+                </div>
+            </section>
+
+            <section id="content-start-stop" class="tab-content">
+                <div class="card">
+                    <h2>Start/stop Content</h2>
+                    <p>Placeholder for Start/stop procedures.</p>
+                </div>
+            </section>
+
+            <section id="content-timms" class="tab-content">
+                <div class="card">
+                    <h2>TIMMS Content</h2>
+                    <p>Placeholder for TIMMS checklist.</p>
+                </div>
+            </section>
+
+            <section id="content-driver-drill" class="tab-content">
+                <div class="card">
+                    <h2>Driver drill Content</h2>
+                    <p>Placeholder for Driver drill exercises.</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <div id="focus-overlay" class="hidden">
+        <div id="interference-toggle-container">
+            <span>Interference:</span>
+            <div class="freq-toggle-group">
+                <label class="freq-label" title="Every 10-20 words">
+                    Lvl 1 (10-20w)
+                    <input type="checkbox" id="freq-1" class="freq-check">
+                    <span class="freq-slider"></span>
+                </label>
+                <label class="freq-label" title="Every 3-7 words">
+                    Lvl 2 (3-7w)
+                    <input type="checkbox" id="freq-2" class="freq-check">
+                    <span class="freq-slider"></span>
+                </label>
+                <label class="freq-label" title="Random 1-15 words">
+                    Chaos (1-15w)
+                    <input type="checkbox" id="freq-3" class="freq-check">
+                    <span class="freq-slider"></span>
+                </label>
+            </div>
+        </div>
+        <button id="focus-close-btn" class="focus-close-btn">&times;</button>
+        <div id="focus-content">
+            <div id="focus-text"></div>
+        </div>
+        <div id="interference-modal" class="hidden">
+            <div id="interference-prompt"></div>
+            <div id="interference-options"></div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
