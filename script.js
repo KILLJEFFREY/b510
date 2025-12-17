@@ -5,6 +5,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     window.scrollTo(0, 0);
 
+    // --- Authentication Logic ---
+    const authOverlay = document.getElementById('auth-overlay');
+    const authPasswordInput = document.getElementById('auth-password');
+    const authSubmitBtn = document.getElementById('auth-submit');
+    const authError = document.getElementById('auth-error');
+
+    // Simple hardcoded password - CHANGE THIS
+    const AUTH_PASSWORD = "password123";
+
+    function checkAuth() {
+        if (localStorage.getItem('isAuthenticated') === 'true') {
+            authOverlay.classList.add('hidden');
+        } else {
+            authOverlay.classList.remove('hidden');
+            authPasswordInput.focus();
+        }
+    }
+
+    function doLogin() {
+        const input = authPasswordInput.value;
+        if (input === AUTH_PASSWORD) {
+            localStorage.setItem('isAuthenticated', 'true');
+            authOverlay.classList.add('hidden');
+            authError.classList.add('hidden');
+        } else {
+            authError.classList.remove('hidden');
+            authPasswordInput.value = '';
+            authPasswordInput.focus();
+        }
+    }
+
+    authSubmitBtn.addEventListener('click', doLogin);
+    authPasswordInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') doLogin();
+    });
+
+    // Initial Check
+    checkAuth();
+
     // --- Tabs Logic ---
     const tabs = document.querySelectorAll('.tab-button');
     const contents = document.querySelectorAll('.tab-content');
