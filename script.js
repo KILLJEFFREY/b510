@@ -502,11 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => card.focus(), 0);
         }
 
-        // ... newline/bold processing ...
-
-        // ... newline/bold processing ...
-
-
         // Helper to set Reveal State
         function setReveal(shouldReveal) {
             if (shouldReveal) {
@@ -518,8 +513,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             updateProgress();
         }
-
-        // ... newline/bold processing ...
 
         // Replace standard newlines with a generic marker surrounded by spaces to ensure clean splitting
         const marker = '___BR___';
