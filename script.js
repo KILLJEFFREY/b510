@@ -481,29 +481,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const actionContainer = document.createElement('div');
         actionContainer.className = 'card-actions';
 
-        // 1. Read Button (Mapped to Focus/RSVP)
-        const focusButton = document.createElement('button');
-        focusButton.textContent = 'Read';
-        focusButton.className = 'card-action-btn focus-btn';
-        actionContainer.appendChild(focusButton);
-
-        // 2. Audit Button (Mapped to Reveal All)
+        // 1. Show/Hide Button (Toggles text)
         const revealAllButton = document.createElement('button');
-        revealAllButton.textContent = 'Audit';
+        revealAllButton.textContent = 'Show';
         revealAllButton.className = 'card-action-btn reveal-btn';
         actionContainer.appendChild(revealAllButton);
 
-        // 3. Test Button (New Placeholder)
+        // 2. Drill Button (Launch Focus Mode)
         const testButton = document.createElement('button');
-        testButton.textContent = 'Test';
-        testButton.className = 'card-action-btn test-btn'; // New class
+        testButton.textContent = 'Drill';
+        testButton.className = 'card-action-btn test-btn';
         actionContainer.appendChild(testButton);
-
-        // 4. Reinforce Button (Mapped to Chunk)
-        const chunkButton = document.createElement('button');
-        chunkButton.textContent = 'Reinforce';
-        chunkButton.className = 'card-action-btn chunk-btn';
-        actionContainer.appendChild(chunkButton);
 
         // card.appendChild(actionContainer); <--- REMOVED, moving to footer later.
 
@@ -516,39 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ... newline/bold processing ...
 
-        // Chunking Logic
-        let isChunked = false;
-        // Helper to set Chunk State
-        function setChunk(shouldChunk) {
-            if (shouldChunk === isChunked) return; // No change
-
-            if (!shouldChunk) {
-                // Unchunk
-                const breaks = revealContainer.querySelectorAll('.chunk-br');
-                breaks.forEach(br => br.remove());
-                chunkButton.textContent = 'Reinforce'; // Default state text
-                isChunked = false;
-            } else {
-                // Chunk
-                const nodes = Array.from(revealContainer.childNodes);
-                let wordCount = 0;
-                nodes.forEach(node => {
-                    if (node.tagName === 'BR') {
-                        wordCount = 0;
-                    } else if (node.tagName === 'SPAN') {
-                        wordCount++;
-                        if (wordCount === 7) {
-                            const br = document.createElement('br');
-                            br.className = 'chunk-br';
-                            node.insertAdjacentElement('afterend', br);
-                            wordCount = 0;
-                        }
-                    }
-                });
-                chunkButton.textContent = 'Unchunk';
-                isChunked = true;
-            }
-        }
+        // ... newline/bold processing ...
 
 
         // Helper to set Reveal State
@@ -563,45 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateProgress();
         }
 
-        /* --- 3. Test Mode (Performance) --- */
-        testButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const contentArray = meaningfulSpans.map(span => span.innerHTML);
-            // Pass elementId as the card ID, and refreshStruggleView as the exit callback
-            startFocusMode(elementId, contentArray, refreshStruggleView);
-        });
-
-        /* --- 4. Reinforce Mode (Dropout Drill) --- */
-        chunkButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-
-            // Toggle Logic:
-            // "Reinforcing" if we have mixed visibility (visible > 0 and visible < total).
-
-            const total = meaningfulSpans.length;
-            const visibleCount = meaningfulSpans.filter(s => s.classList.contains('visible')).length;
-            const isReinforcing = visibleCount > 0 && visibleCount < total;
-
-            // If ALREADY Reinforcing -> Revert to Show All.
-            // Else -> Force Reinforce (Dropout Drill).
-
-            if (isReinforcing) {
-                setReveal(true); // Revert to Show All
-                setChunk(false);
-            } else {
-                setReveal(false); // Hide all
-                setChunk(false);  // Unchunk
-
-                // Reveal ONLY struggle words
-                meaningfulSpans.forEach(span => {
-                    if (span.classList.contains('struggle-word')) {
-                        span.classList.add('visible');
-                    }
-                });
-                updateProgress();
-            }
-            refocusCard();
-        });
+        // ... newline/bold processing ...
 
         // Replace standard newlines with a generic marker surrounded by spaces to ensure clean splitting
         const marker = '___BR___';
@@ -696,24 +614,21 @@ document.addEventListener('DOMContentLoaded', () => {
             return revealedCount === meaningfulSpans.length;
         }
 
-        /* --- 1. Read Mode (Acquisition) --- */
-        focusButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-
-        /* --- 2. Audit Mode (Verification) --- */
+        /* --- 1. Show/Hide Mode --- */
         revealAllButton.addEventListener('click', (e) => {
             e.stopPropagation();
+            const isAnyHidden = meaningfulSpans.some(s => !s.classList.contains('visible'));
+            setReveal(isAnyHidden);
         });
 
-        /* --- 3. Test Mode (Performance) --- */
+        /* --- 2. Drill Mode (Focus/RSVP) --- */
         testButton.addEventListener('click', (e) => {
             e.stopPropagation();
-        });
-
-        /* --- 4. Reinforce Mode (Dropout Drill) --- */
-        chunkButton.addEventListener('click', (e) => {
-            e.stopPropagation();
+            const textArray = meaningfulSpans.map(s => s.innerHTML);
+            startFocusMode(elementId, textArray, () => {
+                refreshStruggleView();
+                refocusCard();
+            });
         });
 
         // Make card focusable
@@ -791,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         strategyGuide.className = 'strategy-guide';
         strategyGuide.innerHTML = `
             <p>
-                <strong>The Protocol:</strong> Start with "1) Focus" to imprint the sequence, using the down arrow to flag any words you struggle with (they'll turn red). Once you've marked your weak points, exit and use the now red words on the card to guide your recitation. Finally, use "2) Reveal" to test yourself cold, and only touch "3) Chunk" if you need emergency scaffolding.
+                <strong>The Protocol:</strong> Use <strong>Show</strong> to instantly reveal the full text for a quick audit of your recall. Use <strong>Drill</strong> to launch the timed focus mode, which helps stress-test your speed and accuracy. Tap the percentage indicator at any time to reveal the next word.
             </p>
         `;
 
