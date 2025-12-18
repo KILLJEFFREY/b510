@@ -92,6 +92,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastScrollTop = 0;
 
     function handleScroll(e) {
+        // Only run hiding logic on mobile
+        if (window.innerWidth > 768) {
+            header.classList.remove('nav-hidden');
+            return;
+        }
+
         const scrollTop = e.target.scrollTop;
 
         // Hide/Show Navbar
