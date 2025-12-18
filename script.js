@@ -68,6 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetContent = document.getElementById(targetId);
             if (targetContent) {
                 targetContent.classList.add('active');
+                targetContent.scrollTop = 0; // Reset scroll position for new tab
+                lastScrollTop = 0; // Reset navbar hide tracker
+                header.classList.remove('nav-hidden'); // Ensure navbar is visible on switch
             }
         });
     });
@@ -83,6 +86,27 @@ document.addEventListener('DOMContentLoaded', () => {
         // verify clean layout before setting
         setTimeout(() => updateIndicator(initialActive), 0);
     }
+
+    // --- Navbar Hiding Logic ---
+    const header = document.querySelector('.header');
+    let lastScrollTop = 0;
+
+    function handleScroll(e) {
+        const scrollTop = e.target.scrollTop;
+
+        // Hide/Show Navbar
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+            header.classList.add('nav-hidden');
+        } else {
+            header.classList.remove('nav-hidden');
+        }
+        lastScrollTop = scrollTop;
+    }
+
+    // Attach scroll listener to all tab contents
+    contents.forEach(content => {
+        content.addEventListener('scroll', handleScroll);
+    });
 
     // --- Reveal Logic ---
     // --- Focus Mode Logic ---
