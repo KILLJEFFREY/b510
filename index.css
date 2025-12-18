@@ -42,8 +42,9 @@ button {
 
 
 .header {
+    margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
-    padding: 1rem 1.5rem;
+    padding-bottom: 10px;
     background: #fff;
     z-index: 1000;
 }
@@ -51,6 +52,8 @@ button {
 /* Specific to Mobile Mode */
 @media (max-width: 768px) {
     .header {
+        margin-bottom: 0;
+        padding: 1rem 1.5rem;
         position: fixed;
         top: 0;
         left: 0;
@@ -176,7 +179,15 @@ button {
 .entries-grid {
     display: flex;
     flex-direction: column;
-    /* gap: 20px; REMOVED to keep cards stacked for snapping */
+    gap: 20px;
+    /* Restored original desktop gap */
+}
+
+@media (max-width: 768px) {
+    .entries-grid {
+        gap: 0;
+        /* No gaps on mobile for seamless snapping */
+    }
 }
 
 .card {
