@@ -8,8 +8,6 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 20px;
-    /* Padding for scrollIntoView */
 }
 
 body {
@@ -17,9 +15,11 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
+    padding: 0 20px 20px 20px;
+    /* Remove top padding for flush sticky header */
     touch-action: manipulation;
+    /* Prevent double-tap zoom */
     font-size: 20px;
-    line-height: 1.6;
 }
 
 /* Prevent iOS zoom on focus */
@@ -34,9 +34,9 @@ button {
 }
 
 .app-container {
-    max-width: 100%;
-    /* Go full width for snap container context */
-    margin: 0;
+    max-width: 900px;
+    /* Widened to 900px */
+    margin: 0 auto;
 }
 
 
@@ -44,26 +44,17 @@ button {
 .header {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
-    background: #fff;
-    z-index: 1000;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    background-color: var(--bg-color);
+    /* Ensure content doesn't bleed through */
+    z-index: 99999;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Specific to Mobile Mode */
-@media (max-width: 768px) {
-    .header {
-        margin-bottom: 0;
-        padding: 1rem 1.5rem;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .header.nav-hidden {
-        transform: translateY(-100%);
-    }
+.header--hidden {
+    transform: translateY(-100%);
 }
 
 .tabs-nav {
@@ -87,11 +78,11 @@ button {
 .tab-button {
     background: none;
     border: 1px solid var(--border-color);
-    padding: 12px 24px;
-    /* Increased padding */
+    padding: 15px 25px;
+    /* Larger hit area */
     cursor: pointer;
     font-size: 18px;
-    /* Increased font size */
+    /* Larger font for tabs */
 }
 
 .tab-button.active {
@@ -162,32 +153,10 @@ button {
     display: block;
 }
 
-@media (max-width: 768px) {
-    .tab-content.active {
-        height: 100dvh;
-        overflow-y: scroll;
-        scroll-snap-type: y mandatory;
-        scrollbar-width: none;
-        /* Hide scrollbar for cleaner look */
-    }
-
-    .tab-content::-webkit-scrollbar {
-        display: none;
-    }
-}
-
 .entries-grid {
     display: flex;
     flex-direction: column;
     gap: 20px;
-    /* Restored original desktop gap */
-}
-
-@media (max-width: 768px) {
-    .entries-grid {
-        gap: 0;
-        /* No gaps on mobile for seamless snapping */
-    }
 }
 
 .card {
@@ -198,30 +167,18 @@ button {
 .interactive-card {
     position: relative;
     z-index: 5;
+    /* Ensure it floats above the drawer */
     cursor: pointer;
     background-color: #f9f9f9;
-    border-bottom: 1px solid #eee;
+    /* Original Lighter BG */
+    border: 1px solid #ccc;
+    /* Standard Border */
     user-select: none;
     -webkit-user-select: none;
+    /* padding-bottom: 40px;  REMOVED */
     outline: none;
     border-radius: 0;
-    max-width: 900px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 40px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-}
-
-@media (max-width: 768px) {
-    .interactive-card {
-        min-height: 100dvh;
-        padding: 100px 40px 60px 40px;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
-        justify-content: center;
-    }
+    /* Squared corners */
 }
 
 .interactive-card:focus {
@@ -234,9 +191,7 @@ button {
 
 .reveal-text {
     line-height: 1.8;
-    /* Increased for breathing room */
-    font-size: 1.25rem;
-    /* ~25px based on 20px body */
+    /* Increased for easier tracking */
 }
 
 .card-actions {
@@ -247,16 +202,17 @@ button {
 
 /* Unified Button Style */
 .card-action-btn {
-    font-size: 1rem;
-    /* Scaled up */
-    font-weight: 600;
+    font-size: 18px;
+    /* Larger font */
+    font-weight: 500;
     color: #555;
+    /* Uniform readable grey */
     cursor: pointer;
     background: #fff;
     border: 1px solid #eee;
-    padding: 8px 16px;
+    padding: 12px 24px;
     /* Larger hit area */
-    border-radius: 6px;
+    border-radius: 4px;
     transition: all 0.2s ease;
 }
 
@@ -329,10 +285,9 @@ button {
 }
 
 h2 {
-    margin-bottom: 10px;
-    font-size: 1.75rem;
-    /* Larger headers */
-    font-weight: 700;
+    margin-bottom: 5px;
+    /* Reduced to sit closer to progress bar */
+    font-weight: 600;
 }
 
 /* --- Focus Mode Overlay --- */

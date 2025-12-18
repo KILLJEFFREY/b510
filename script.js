@@ -1,4 +1,33 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Smart Navbar Hiding Logic ---
+    const header = document.querySelector('.header');
+    let lastScrollY = window.scrollY;
+    const SCROLL_THRESHOLD = 50; // Minimum scroll distance to trigger hide
+    const NAVBAR_THRESHOLD = 10; // Extra buffer to prevent flickering
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+
+        // Don't hide if we're at the very top
+        if (currentScrollY < NAVBAR_THRESHOLD) {
+            header.classList.remove('header--hidden');
+            return;
+        }
+
+        // Check if we've scrolled enough to bother toggling
+        if (Math.abs(currentScrollY - lastScrollY) < 5) return;
+
+        if (currentScrollY > lastScrollY && currentScrollY > SCROLL_THRESHOLD) {
+            // Scrolling Down - Hide
+            header.classList.add('header--hidden');
+        } else {
+            // Scrolling Up - Show
+            header.classList.remove('header--hidden');
+        }
+
+        lastScrollY = currentScrollY;
+    }, { passive: true });
+
     // Force scroll to top on reload to avoid disorientation
     if (history.scrollRestoration) {
         history.scrollRestoration = 'manual';
@@ -68,9 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const targetContent = document.getElementById(targetId);
             if (targetContent) {
                 targetContent.classList.add('active');
-                targetContent.scrollTop = 0; // Reset scroll position for new tab
-                lastScrollTop = 0; // Reset navbar hide tracker
-                header.classList.remove('nav-hidden'); // Ensure navbar is visible on switch
             }
         });
     });
@@ -86,33 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // verify clean layout before setting
         setTimeout(() => updateIndicator(initialActive), 0);
     }
-
-    // --- Navbar Hiding Logic ---
-    const header = document.querySelector('.header');
-    let lastScrollTop = 0;
-
-    function handleScroll(e) {
-        // Only run hiding logic on mobile
-        if (window.innerWidth > 768) {
-            header.classList.remove('nav-hidden');
-            return;
-        }
-
-        const scrollTop = e.target.scrollTop;
-
-        // Hide/Show Navbar
-        if (scrollTop > lastScrollTop && scrollTop > 100) {
-            header.classList.add('nav-hidden');
-        } else {
-            header.classList.remove('nav-hidden');
-        }
-        lastScrollTop = scrollTop;
-    }
-
-    // Attach scroll listener to all tab contents
-    contents.forEach(content => {
-        content.addEventListener('scroll', handleScroll);
-    });
 
     // --- Reveal Logic ---
     // --- Focus Mode Logic ---
