@@ -558,7 +558,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 revealAllButton.textContent = 'Hide';
             } else {
                 meaningfulSpans.forEach(span => span.classList.remove('visible'));
-                revealAllButton.textContent = 'Audit';
+                revealAllButton.textContent = 'Show';
             }
             updateProgress();
         }
