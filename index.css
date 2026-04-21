@@ -67,6 +67,10 @@
     padding: 0;
 }
 
+.hidden {
+    display: none !important;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -316,8 +320,11 @@ button {
 }
 
 .interactive-card:focus {
-    border-color: var(--border-focus);
-    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 12px 40px -12px rgba(0, 0, 0, 0.5);
+    background: var(--bg-card-hover);
+    outline: none;
+    z-index: 2;
 }
 
 /* Card number badge */
@@ -373,6 +380,45 @@ button {
 
 .mastery-badge.visible {
     opacity: 1;
+}
+
+/* ============================================================
+   RECALL SCHEDULER STATUS
+   ============================================================ */
+.recall-status {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: var(--radius-sm);
+    letter-spacing: 0.05em;
+    margin-left: 8px;
+    transition: var(--transition-base);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.recall-status.hidden {
+    display: none !important;
+}
+
+.recall-status.waiting {
+    color: var(--text-muted);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+}
+
+.recall-status.ready {
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    animation: readyPulse 2s infinite;
+}
+
+@keyframes readyPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 181, 0, 0.4); border-color: var(--accent-border); }
+    50%  { box-shadow: 0 0 12px 2px rgba(255, 181, 0, 0.2); border-color: var(--accent); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 181, 0, 0.4); border-color: var(--accent-border); }
 }
 
 /* ============================================================
@@ -983,39 +1029,46 @@ button {
 /* ============================================================
    FLOATING ACTION BUTTON (FAB)
    ============================================================ */
-.fab {
-    position: fixed;
-    right: 24px;
-    bottom: 80px; /* Positioned above the dock */
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    background-color: var(--accent);
-    color: var(--text-inverse);
-    border: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 
-                inset 0 1px 0 rgba(255, 255, 255, 0.2);
-    cursor: pointer;
-    z-index: 100000; /* Should be on top of everything, same as auth */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
+#fab-reveal.fab {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    position: fixed !important;
+    right: 24px !important;
+    bottom: 80px !important; /* Positioned above the dock */
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 50% !important;
+    background-color: var(--accent) !important;
+    color: var(--text-inverse) !important;
+    border: none !important;
+    box-shadow: 
+        0 12px 32px -8px rgba(0, 0, 0, 0.6),
+        0 4px 12px -2px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    cursor: pointer !important;
+    z-index: 100000 !important; /* Should be on top of everything, same as auth */
     transition: var(--transition-base);
 }
 
-.fab:hover {
+#fab-reveal.fab svg {
+    width: 28px;
+    height: 28px;
+    stroke-width: 2.5px;
+}
+
+#fab-reveal.fab:hover {
     transform: translateY(-4px) scale(1.05);
     background-color: #ffc233; /* Slightly brighter gold */
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
-.fab:active {
+#fab-reveal.fab:active {
     transform: translateY(0) scale(0.95);
     background-color: #e6a300; /* Slightly darker gold */
 }
 
-.fab:focus {
+#fab-reveal.fab:focus {
     outline: none;
     box-shadow: 0 0 0 4px rgba(255, 181, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4);
 }

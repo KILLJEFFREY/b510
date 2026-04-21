@@ -149,6 +149,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // ============================================================
+    // RECALL SCHEDULER LOGIC
+    // ============================================================
+    const RECALL_INTERVALS = [1, 5, 10, 30, 60, 120, 300, 600, 1200, 1800]; // in seconds
+
+    function getRecallKey(cardId, type) { return `recall_${type}_${cardId}`; }
+
+    function getRecallState(cardId) {
+        return {
+            level: parseInt(localStorage.getItem(getRecallKey(cardId, 'level')) || '-1', 10),
+            nextAt: parseInt(localStorage.getItem(getRecallKey(cardId, 'nextAt')) || '0', 10)
+        };
+    }
+
+    function advanceRecallSchedule(cardId) {
+        const state = getRecallState(cardId);
+        const nextLevel = Math.min(state.level + 1, RECALL_INTERVALS.length - 1);
+        const nextAt    = Date.now() + (RECALL_INTERVALS[nextLevel] * 1000);
+
+        localStorage.setItem(getRecallKey(cardId, 'level'), String(nextLevel));
+        localStorage.setItem(getRecallKey(cardId, 'nextAt'), String(nextAt));
+        
+        updateCardRecallUI(cardId);
+    }
+
+    function resetRecallSchedule(cardId) {
+        // Reset to first interval (1s)
+        const nextAt = Date.now() + (RECALL_INTERVALS[0] * 1000);
+        localStorage.setItem(getRecallKey(cardId, 'level'), '0');
+        localStorage.setItem(getRecallKey(cardId, 'nextAt'), String(nextAt));
+
+        updateCardRecallUI(cardId);
+    }
+
+    function formatTimeRemaining(ms) {
+        if (ms <= 0) return "READY";
+        const totalSec = Math.ceil(ms / 1000);
+        if (totalSec < 60) return `${totalSec}s`;
+        const m = Math.floor(totalSec / 60);
+        const s = totalSec % 60;
+        return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function updateCardRecallUI(cardId) {
+        const badge = document.getElementById(`recall-status-${cardId}`);
+        if (!badge) return;
+
+        const state = getRecallState(cardId);
+        if (state.level === -1) {
+            badge.classList.add('hidden');
+            return;
+        }
+
+        badge.classList.remove('hidden');
+        const now = Date.now();
+        const diff = state.nextAt - now;
+
+        if (diff <= 0) {
+            badge.textContent = "READY";
+            badge.className   = "recall-status ready";
+        } else {
+            badge.textContent = `Recall in ${formatTimeRemaining(diff)}`;
+            badge.className   = "recall-status waiting";
+        }
+    }
+
+    function startGlobalRecallTick() {
+        setInterval(() => {
+            const badges = document.querySelectorAll('.recall-status:not(.hidden)');
+            badges.forEach(badge => {
+                const cardId = badge.id.replace('recall-status-', '');
+                updateCardRecallUI(cardId);
+            });
+        }, 1000);
+    }
+
+    startGlobalRecallTick();
+
+
+    // ============================================================
     // BUILD ALL GRIDS FROM data.js
     // ============================================================
 
@@ -182,9 +261,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     masteryBadge.classList.add('visible');
                 }
 
+                const recallStatus = document.createElement('span');
+                recallStatus.className = 'recall-status hidden';
+                recallStatus.id        = `recall-status-${entry.id}`;
+
                 titleRow.appendChild(num);
                 titleRow.appendChild(h2);
                 titleRow.appendChild(masteryBadge);
+                titleRow.appendChild(recallStatus);
                 card.appendChild(titleRow);
 
                 const revealText = document.createElement('p');
@@ -414,6 +498,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     badge.textContent = `${newCount}× clean`;
                     badge.classList.add('visible');
                 }
+                advanceRecallSchedule(currentCardId);
+            } else {
+                // If there were struggle words, reset the schedule to the start
+                resetRecallSchedule(currentCardId);
             }
             return;
         }
