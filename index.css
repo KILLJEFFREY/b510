@@ -1030,25 +1030,29 @@ button {
    FLOATING ACTION BUTTON (FAB)
    ============================================================ */
 #fab-reveal.fab {
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    position: fixed !important;
-    right: 24px !important;
-    bottom: 80px !important; /* Positioned above the dock */
-    width: 64px !important;
-    height: 64px !important;
-    border-radius: 50% !important;
-    background-color: var(--accent) !important;
-    color: var(--text-inverse) !important;
-    border: none !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    right: 24px;
+    bottom: 80px; /* Positioned above the dock */
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    color: var(--text-inverse);
+    border: none;
     box-shadow: 
         0 12px 32px -8px rgba(0, 0, 0, 0.6),
         0 4px 12px -2px rgba(0, 0, 0, 0.3),
-        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-    cursor: pointer !important;
-    z-index: 100000 !important; /* Should be on top of everything, same as auth */
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    z-index: 100000; /* Should be on top of everything, same as auth */
     transition: var(--transition-base);
+}
+
+#fab-reveal.hidden {
+    display: none !important;
 }
 
 #fab-reveal.fab svg {
