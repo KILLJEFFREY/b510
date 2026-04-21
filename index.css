@@ -1,9 +1,70 @@
+/* ============================================================
+   SPAb510 — Industrial Clinical Design System
+   Dark Mode / High-Fidelity / Precision Recall Trainer
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
 :root {
-    /* Basic variables for easier maintanance, but kept simple */
-    --bg-color: #ffffff;
-    --text-color: #000000;
-    --border-color: #cccccc;
-    --active-bg: #e0e0e0;
+    /* Core Palette */
+    --bg-primary:    #0c0c0e;
+    --bg-secondary:  #131316;
+    --bg-card:       #18181c;
+    --bg-card-hover: #1e1e23;
+    --bg-elevated:   #222228;
+
+    /* Borders */
+    --border-subtle:  rgba(255, 255, 255, 0.06);
+    --border-default: rgba(255, 255, 255, 0.10);
+    --border-focus:   rgba(255, 255, 255, 0.30);
+
+    /* Text */
+    --text-primary:   #f0f0f2;
+    --text-secondary: #a0a0aa;
+    --text-muted:     #60606a;
+    --text-inverse:   #0c0c0e;
+
+    /* Accent — UPS Yellow/Gold */
+    --accent:          #FFB500;
+    --accent-dim:      rgba(255, 181, 0, 0.15);
+    --accent-border:   rgba(255, 181, 0, 0.4);
+
+    /* States */
+    --success:       #22c55e;
+    --success-dim:   rgba(34, 197, 94, 0.12);
+    --danger:        #ef4444;
+    --danger-dim:    rgba(239, 68, 68, 0.12);
+    --blue:          #3b82f6;
+    --blue-dim:      rgba(59, 130, 246, 0.12);
+    --purple:        #a855f7;
+    --purple-dim:    rgba(168, 85, 247, 0.12);
+
+    /* Typography */
+    --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono:  'JetBrains Mono', 'Courier New', monospace;
+
+    /* Spacing */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+
+    /* Transitions */
+    --transition-fast:   all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base:   all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow:   all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 html {
@@ -11,299 +72,518 @@ html {
 }
 
 body {
-    font-family: sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    font-family: var(--font-sans);
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     margin: 0;
-    padding: 0 20px 20px 20px;
-    /* Remove top padding for flush sticky header */
+    padding: 80px 20px 90px 20px;
     touch-action: manipulation;
-    /* Prevent double-tap zoom */
-    font-size: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
 }
 
 /* Prevent iOS zoom on focus */
-input,
-textarea,
-select {
+input, textarea, select {
     font-size: 16px !important;
+    font-family: var(--font-sans);
 }
 
 button {
     touch-action: manipulation;
+    font-family: var(--font-sans);
 }
 
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: var(--border-default);
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--border-focus);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
 .app-container {
-    max-width: 900px;
-    /* Widened to 900px */
+    max-width: 860px;
     margin: 0 auto;
 }
 
-
-
+/* ============================================================
+   HEADER & NAVIGATION
+   ============================================================ */
 .header {
-    margin-bottom: 2rem;
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 0;
-    position: sticky;
-    top: 0;
-    background-color: var(--bg-color);
-    /* Ensure content doesn't bleed through */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     z-index: 99999;
+    border-top: 1px solid var(--accent);
+    border-bottom: none;
+    padding: 10px 20px 12px;
+    margin-bottom: 0;
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background-color: rgba(12, 12, 14, 0.94);
 }
 
 .header--hidden {
-    transform: translateY(-100%);
+    transform: translateY(100%);
 }
 
 .tabs-nav {
     display: flex;
-    gap: 10px;
+    gap: 4px;
     overflow-x: auto;
     white-space: nowrap;
     scrollbar-width: none;
-    /* Firefox */
     -ms-overflow-style: none;
-    /* IE 10+ */
     -webkit-overflow-scrolling: touch;
-    /* iOS smooth scrolling */
+    position: relative;
+    padding-bottom: 1px;
 }
 
 .tabs-nav::-webkit-scrollbar {
     display: none;
-    /* Chrome/Safari/Webkit */
 }
 
 .tab-button {
     background: none;
-    border: 1px solid var(--border-color);
-    padding: 15px 25px;
-    /* Larger hit area */
+    border: none;
+    padding: 8px 16px;
     cursor: pointer;
-    font-size: 18px;
-    /* Larger font for tabs */
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+    letter-spacing: 0.01em;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.tab-button:hover {
+    color: var(--text-secondary);
+    background: var(--border-subtle);
 }
 
 .tab-button.active {
-    background-color: var(--active-bg);
-    font-weight: bold;
-    border-bottom: 2px solid #351c15;
-    /* Match progress bar brown */
+    color: var(--accent);
+    font-weight: 600;
+    background: var(--accent-dim);
 }
 
-/* The slider indicator is removed for "basic" style */
+.tab-button--disabled,
+.tab-button--disabled:hover {
+    color: var(--border-default);
+    cursor: not-allowed;
+    opacity: 0.35;
+    background: none;
+}
+
+.tab-button.active::after {
+    content: '';
+    position: absolute;
+    top: -11px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0 0 2px 2px;
+}
+
 .tab-indicator {
     display: none;
 }
 
-.progress-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-    /* Moved margin here from container */
-    margin-top: 0;
-    cursor: pointer;
-    /* Interactive */
-    touch-action: manipulation;
-    transition: opacity 0.1s;
-}
-
-.progress-wrapper:active {
-    opacity: 0.6;
-}
-
-.card-progress-container {
-    height: 3px;
-    background-color: #351c15;
-    /* margin-bottom removed, handled by wrapper */
-    width: 100%;
-    /* Will be controlled by flex in wrapper, but good default */
-    border-radius: 1.5px;
-    overflow: hidden;
-    flex-grow: 1;
-    /* Allow it to fill space */
-}
-
-.progress-text {
-    font-size: 0.85rem;
-    color: #666;
-    font-weight: 500;
-    min-width: 40px;
-    /* Prevent layout shift */
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    /* Prevent jitter */
-}
-
-.card-progress-bar {
-    height: 100%;
-    width: 0%;
-    background-color: #ffb500;
-    transition: width 0.2s ease;
+/* ============================================================
+   CONTENT AREA
+   ============================================================ */
+.content-area {
+    padding-top: 28px;
 }
 
 .tab-content {
     display: none;
-    margin-top: 20px;
+    animation: fadeIn 0.2s ease;
 }
 
 .tab-content.active {
     display: block;
 }
 
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   ENTRIES GRID
+   ============================================================ */
 .entries-grid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 12px;
 }
 
+/* ============================================================
+   CARDS
+   ============================================================ */
 .card {
-    border: 1px solid var(--border-color);
-    padding: 15px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    color: var(--text-primary);
+}
+
+.card h2 {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+.card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 20px 0 8px;
+}
+
+.card h3:first-of-type {
+    margin-top: 4px;
+}
+
+.card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 12px;
+    font-size: 15px;
+}
+
+.card ul {
+    color: var(--text-secondary);
+    padding-left: 20px;
+    margin-bottom: 12px;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.card hr {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 32px 0;
+}
+
+.card strong {
+    color: var(--text-primary);
+    font-weight: 600;
 }
 
 .interactive-card {
     position: relative;
-    z-index: 5;
-    /* Ensure it floats above the drawer */
     cursor: pointer;
-    background-color: #f9f9f9;
-    /* Original Lighter BG */
-    border: 1px solid #ccc;
-    /* Standard Border */
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
     user-select: none;
     -webkit-user-select: none;
-    /* padding-bottom: 40px;  REMOVED */
     outline: none;
-    border-radius: 0;
-    /* Squared corners */
+    transition: var(--transition-base);
+    padding: 20px 24px;
+}
+
+.interactive-card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-default);
 }
 
 .interactive-card:focus {
-    border-color: #000;
-    /* distinct focus state */
-    box-shadow: 0 0 0 1px #000;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.06);
 }
 
-
-
-.reveal-text {
-    line-height: 1.8;
-    /* Increased for easier tracking */
+/* Card number badge */
+.card-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 50%;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-right: 10px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
 }
 
-.card-actions {
-    /* Position static */
+.card-title-row {
     display: flex;
-    gap: 8px;
+    align-items: center;
+    margin-bottom: 14px;
 }
 
-/* Unified Button Style */
-.card-action-btn {
-    font-size: 18px;
-    /* Larger font */
-    font-weight: 500;
-    color: #555;
-    /* Uniform readable grey */
+.card-title-row h2 {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* Mastery badge */
+.mastery-badge {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    letter-spacing: 0.05em;
+    opacity: 0;
+    transition: var(--transition-fast);
+}
+
+.mastery-badge.visible {
+    opacity: 1;
+}
+
+/* ============================================================
+   PROGRESS BAR
+   ============================================================ */
+.progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
     cursor: pointer;
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 12px 24px;
-    /* Larger hit area */
-    border-radius: 4px;
-    transition: all 0.2s ease;
+    touch-action: manipulation;
+    transition: opacity 0.1s;
 }
 
-/* Specific button resting states removed to enforce uniformity */
-
-.card-action-btn:hover {
-    color: #000;
-    border-color: #ccc;
-    text-decoration: none;
+.progress-wrapper:active {
+    opacity: 0.7;
 }
 
-/* Reveal All (Traffic Green) */
-.card-action-btn.reveal-btn:hover {
-    color: #009933;
-    /* Traffic Green Text */
-    background-color: rgba(0, 153, 51, 0.1);
-    border-color: #009933;
+.card-progress-container {
+    height: 2px;
+    background-color: var(--border-subtle);
+    width: 100%;
+    border-radius: 1px;
+    overflow: hidden;
+    flex-grow: 1;
 }
 
-.card-action-btn.reveal-btn:active {
-    background-color: rgba(0, 153, 51, 0.2);
-    color: #009933;
-    border-color: #009933;
+.card-progress-bar {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--accent), rgba(245, 166, 35, 0.7));
+    transition: width 0.2s ease;
+    border-radius: 1px;
 }
 
-/* Chunk (Electric Blue) */
-.card-action-btn.chunk-btn:hover {
-    color: #0071EB;
-    /* Electric Blue Text */
-    background-color: rgba(0, 113, 235, 0.1);
-    border-color: #0071EB;
+.progress-text {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    min-width: 36px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-mono);
+    letter-spacing: 0.05em;
 }
 
-.card-action-btn.chunk-btn:active {
-    background-color: rgba(0, 113, 235, 0.2);
-    color: #0071EB;
-    border-color: #0071EB;
+/* ============================================================
+   REVEAL TEXT
+   ============================================================ */
+.reveal-text {
+    font-size: 17px;
+    line-height: 1.9;
+    color: var(--text-secondary);
 }
-
-
-/* Test (Netflix Red) */
-.card-action-btn.test-btn:hover {
-    color: #E50914;
-    background-color: rgba(229, 9, 20, 0.1);
-    border-color: #E50914;
-}
-
-.card-action-btn.test-btn:active {
-    background-color: rgba(229, 9, 20, 0.2);
-    color: #E50914;
-    border-color: #E50914;
-}
-
-
 
 .reveal-text span {
-    padding: 0;
-    /* Removed padding to match default text spacing */
+    display: inline;
+    padding: 0 1px;
     border-radius: 2px;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     cursor: pointer;
-    background-color: black;
-    color: black;
-    /* Changed to pointer to indicate interactivity */
+    background-color: var(--bg-elevated);
+    color: var(--bg-elevated); /* hidden — matches bg */
+    border-radius: 3px;
+}
+
+.reveal-text span:hover {
+    background-color: var(--border-default);
+    color: var(--border-default);
 }
 
 .reveal-text span.visible {
     background-color: transparent;
-    color: #000;
+    color: var(--text-primary);
 }
 
-h2 {
-    margin-bottom: 5px;
-    /* Reduced to sit closer to progress bar */
+.reveal-text span b {
+    font-weight: 700;
+}
+
+/* Struggle word styling */
+.reveal-text span.visible.struggle-word {
+    text-decoration: underline;
+    text-decoration-color: var(--danger);
+    text-decoration-thickness: 2px;
+    color: var(--danger);
+}
+
+/* ============================================================
+   CARD FOOTER & ACTION BUTTONS
+   ============================================================ */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.card-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.card-action-btn {
+    font-size: 12px;
     font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
 }
 
-/* --- Focus Mode Overlay --- */
+.card-action-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-default);
+    background: var(--border-subtle);
+}
+
+/* Show/Reveal — Green */
+.card-action-btn.reveal-btn:hover {
+    color: var(--success);
+    background: var(--success-dim);
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+.card-action-btn.reveal-btn:active {
+    background: rgba(34, 197, 94, 0.2);
+}
+
+/* Drill — Red (high intensity) */
+.card-action-btn.test-btn:hover {
+    color: var(--danger);
+    background: var(--danger-dim);
+    border-color: rgba(239, 68, 68, 0.3);
+}
+
+.card-action-btn.test-btn:active {
+    background: rgba(239, 68, 68, 0.2);
+}
+
+/* Strategy/Help — neutral */
+.strategy-toggle-btn {
+    color: var(--text-muted);
+}
+
+.strategy-toggle-btn:hover {
+    color: var(--text-secondary);
+    background: var(--border-subtle);
+    border-color: var(--border-default);
+}
+
+/* ============================================================
+   STRATEGY GUIDE DRAWER
+   ============================================================ */
+.strategy-guide {
+    position: relative;
+    display: block;
+    width: auto;
+    margin: -12px 0 12px 0;
+    box-sizing: border-box;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-top: none;
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    z-index: 1;
+    max-height: 0;
+    opacity: 0;
+    padding: 0 20px;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.4s ease,
+                opacity 0.3s ease;
+}
+
+.strategy-guide.visible {
+    max-height: 300px;
+    padding: 20px;
+    opacity: 1;
+}
+
+.strategy-guide p {
+    margin: 0;
+}
+
+/* ============================================================
+   FOCUS MODE OVERLAY
+   ============================================================ */
 #focus-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #1e1e1e;
+    inset: 0;
+    background: rgba(10, 10, 12, 0.97);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     z-index: 9999;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    transition: background 0.3s ease;
 }
 
 #focus-overlay.hidden {
@@ -316,185 +596,110 @@ h2 {
     justify-content: center;
     align-items: center;
     width: 100%;
-    padding: 2rem;
+    padding: 3rem;
     box-sizing: border-box;
 }
 
 #focus-text {
-    font-size: 15vw;
-    /* Massive text */
+    font-size: clamp(3rem, 14vw, 12rem);
     font-weight: 800;
     text-align: center;
-    line-height: 1.1;
-    color: #ffffff;
-    /* Prevent selection to keep it feeling app-like */
+    line-height: 1.05;
+    color: var(--text-primary);
     user-select: none;
     -webkit-user-select: none;
+    letter-spacing: -0.02em;
+    transition: color 0.15s ease;
 }
 
-.focus-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 30px;
-    background: none;
-    border: none;
-    font-size: 3rem;
-    line-height: 1;
-    cursor: pointer;
-    color: #666;
-    z-index: 10000;
-    transition: color 0.2s;
+#focus-text b {
+    color: var(--accent);
 }
 
-.focus-close-btn:hover {
-    color: #ffffff;
-}
-
-/* Netflix Red EOS State */
+/* EOS State */
 #focus-overlay.focus-eos {
-    background: black;
-    color: white;
-}
-
-#focus-overlay.focus-eos #interference-toggle-container,
-#focus-overlay.focus-eos .freq-label {
-    color: #fff;
+    background: rgba(0, 0, 0, 0.99);
 }
 
 #focus-overlay.focus-eos #focus-text {
-    color: #ffffff !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-size: clamp(4rem, 20vw, 16rem);
+    letter-spacing: -0.04em;
 }
 
-#focus-overlay.focus-eos .focus-close-btn {
-    color: #ffffff !important;
+#focus-overlay.focus-eos #interference-toggle-container {
+    opacity: 0.5;
 }
 
-/* Focus Button Style (Deep Purple) */
-.card-action-btn.focus-btn:hover {
-    color: #673AB7;
-    background-color: rgba(103, 58, 183, 0.1);
-    border-color: #673AB7;
-}
-
-.card-action-btn.focus-btn:active {
-    background-color: rgba(103, 58, 183, 0.2);
-    color: #673AB7;
-    border-color: #673AB7;
-}
-
-/* Struggle Word Styles */
-/* Struggle Word Styles */
-/* Only show the struggle indication when the word is revealed */
-.reveal-text span.visible.struggle-word {
-    text-decoration: underline;
-    text-decoration-color: #E50914;
-    text-decoration-thickness: 2px;
-    color: #E50914;
-}
-
-/* Focus Overlay Struggle State */
+/* Struggle State */
 #focus-text.struggle {
-    color: #E50914 !important;
+    color: var(--danger) !important;
 }
 
-/* Old Styles Removed - Merged into interactive-card section */
-
-/* Strategy Footer */
-.card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 25px;
-    /* Push away from content */
-}
-
-.strategy-toggle-btn {
-    /* Inherits card-action-btn styles */
-
-
-    color: #555;
+/* Close Button */
+.focus-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--text-muted);
+    z-index: 10000;
+    transition: var(--transition-fast);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
     font-weight: 500;
 }
 
-.strategy-toggle-btn:hover {
-    color: #333;
-    background-color: rgba(0, 0, 0, 0.05);
-    border-color: #999;
+.focus-close-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-focus);
+    background: var(--border-subtle);
 }
 
-.strategy-toggle-btn:active {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #000;
-    border-color: #666;
+/* Focus Word Index Counter */
+#focus-counter {
+    position: absolute;
+    top: 20px;
+    left: 24px;
+    font-size: 12px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
 }
 
-.strategy-guide {
-    position: relative;
-    display: block;
-    /* Always block for transition */
-
-    /* Full width to match card */
-    width: auto;
-    margin: -20px 0 20px 0;
-    box-sizing: border-box;
-
-    background-color: #ffffff;
-    /* Contrast: White */
-    border: 1px solid #e0e0e0;
-    /* Lighter Border */
-    border-top: none;
-    border-radius: 0;
-
-    font-size: 0.85rem;
-    line-height: 1.5;
-    color: #555;
-
-    /* Animation Props */
-    z-index: 1;
-    /* Behind card (which is 5) */
-    max-height: 0;
-    opacity: 0;
-    padding: 0 20px;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        padding 0.4s ease,
-        opacity 0.3s ease;
-}
-
-.strategy-guide.visible {
-    /* Slide out */
-    max-height: 500px;
-    /* Arbitrary large height */
-    padding: 25px 20px 20px 20px;
-    /* Top padding clears the overlap */
-    opacity: 1;
-}
-
-.strategy-guide p {
-    margin: 0;
-}
-
-/* --- Interference Mode UI --- */
+/* ============================================================
+   INTERFERENCE MODE
+   ============================================================ */
 #interference-toggle-container {
     position: absolute;
-    bottom: 40px;
-    /* Bottom of screen */
+    bottom: 36px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 10000;
     display: flex;
     flex-direction: column;
-    /* Stack Label and Toggles */
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
-    color: #888;
+    font-size: 11px;
+    color: var(--text-muted);
     user-select: none;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+    text-transform: uppercase;
 }
 
 .freq-toggle-group {
     display: flex;
-    gap: 15px;
+    gap: 12px;
 }
 
 .freq-label {
@@ -502,29 +707,32 @@ h2 {
     align-items: center;
     gap: 6px;
     cursor: pointer;
-    font-size: 0.85rem;
-    color: #aaa;
-    transition: color 0.2s;
+    font-size: 11px;
+    color: var(--text-muted);
+    transition: var(--transition-fast);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    font-weight: 600;
 }
 
 .freq-label:hover {
-    color: #fff;
+    color: var(--text-secondary);
 }
 
-/* Custom Toggle Switch (Mini) */
 .freq-check {
     display: none;
-    /* Hide default checkbox */
 }
 
 .freq-slider {
     position: relative;
-    width: 30px;
-    height: 16px;
-    background-color: #555;
-    border-radius: 16px;
-    transition: background-color 0.2s;
+    width: 28px;
+    height: 15px;
+    background-color: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    border-radius: 15px;
+    transition: background-color 0.2s, border-color 0.2s;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 .freq-slider::after {
@@ -532,20 +740,21 @@ h2 {
     position: absolute;
     top: 2px;
     left: 2px;
-    width: 12px;
-    height: 12px;
-    background-color: white;
+    width: 9px;
+    height: 9px;
+    background-color: var(--text-muted);
     border-radius: 50%;
-    transition: transform 0.2s;
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.freq-check:checked+.freq-slider {
-    background-color: #4CAF50;
-    /* Green when active */
+.freq-check:checked + .freq-slider {
+    background-color: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.5);
 }
 
-.freq-check:checked+.freq-slider::after {
-    transform: translateX(14px);
+.freq-check:checked + .freq-slider::after {
+    transform: translateX(13px);
+    background-color: var(--success);
 }
 
 #interference-modal {
@@ -553,94 +762,98 @@ h2 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #2c2c2c;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    padding: 36px;
+    border-radius: var(--radius-xl);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
     text-align: center;
     z-index: 10001;
-    min-width: 300px;
+    min-width: 320px;
+    max-width: 420px;
+    width: 90vw;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 #interference-modal.hidden {
     display: none;
 }
 
-/* Wait Task Mode: Red Border */
 #interference-modal.penalty-mode {
-    border: 2px solid #ff4444;
+    border-color: rgba(239, 68, 68, 0.4);
+    background: rgba(239, 68, 68, 0.05);
 }
 
 #interference-prompt {
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #fff;
-    margin-bottom: 20px;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
 }
 
 #interference-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 10px;
 }
 
-/* Interference Buttons (Generic) */
 .interference-btn {
-    background: #444;
-    border: none;
-    color: #fff;
-    font-size: 1.5rem;
-    padding: 15px;
-    border-radius: 4px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 14px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: var(--transition-fast);
+    letter-spacing: 0.02em;
+    font-family: var(--font-sans);
 }
 
 .interference-btn:hover {
-    background: #666;
+    background: var(--border-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-focus);
 }
 
-/* Shake Animation for Wrong Answer */
+.interference-btn:active {
+    background: var(--accent-dim);
+    border-color: var(--accent-border);
+    color: var(--accent);
+}
+
+/* Shake animation */
 @keyframes shake {
-    0% {
-        transform: translate(-50%, -50%) translateX(0);
-    }
-
-    25% {
-        transform: translate(-50%, -50%) translateX(-10px);
-    }
-
-    50% {
-        transform: translate(-50%, -50%) translateX(10px);
-    }
-
-    75% {
-        transform: translate(-50%, -50%) translateX(-10px);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) translateX(0);
-    }
+    0%   { transform: translate(-50%, -50%) translateX(0); }
+    20%  { transform: translate(-50%, -50%) translateX(-10px); }
+    40%  { transform: translate(-50%, -50%) translateX(10px); }
+    60%  { transform: translate(-50%, -50%) translateX(-8px); }
+    80%  { transform: translate(-50%, -50%) translateX(8px); }
+    100% { transform: translate(-50%, -50%) translateX(0); }
 }
 
 .shake {
     animation: shake 0.4s ease-in-out;
-    border: 1px solid #ff4444;
+    border-color: rgba(239, 68, 68, 0.5) !important;
 }
 
-/* --- Authentication Overlay --- */
+/* ============================================================
+   AUTHENTICATION OVERLAY
+   ============================================================ */
 #auth-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: #000;
+    inset: 0;
+    background: var(--bg-primary);
     z-index: 100000;
-    /* Topmost */
     display: flex;
     justify-content: center;
     align-items: center;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 #auth-overlay.hidden {
@@ -648,68 +861,198 @@ h2 {
 }
 
 .auth-box {
-    background: #1e1e1e;
-    padding: 40px;
-    border-radius: 8px;
+    background: var(--bg-card);
+    padding: 44px 40px;
+    border-radius: var(--radius-xl);
     text-align: center;
-    border: 1px solid #333;
+    border: 1px solid var(--border-default);
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    width: 300px;
+    gap: 12px;
+    width: 340px;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.5);
+    animation: authAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes authAppear {
+    from { opacity: 0; transform: scale(0.92) translateY(16px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.auth-logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
 }
 
 .auth-box h2 {
-    color: #fff;
-    font-size: 1.2rem;
-    margin-bottom: 5px;
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.02em;
 }
 
 .auth-subtitle {
-    color: #888;
-    font-size: 0.8rem;
-    margin-top: -5px;
-    margin-bottom: 10px;
+    color: var(--text-muted);
+    font-size: 12px;
     font-style: italic;
-    line-height: 1.2;
+    line-height: 1.3;
+    margin-top: -4px;
 }
 
 #auth-password {
-    padding: 10px;
-    border-radius: 4px;
-    border: 1px solid #444;
-    background: #333;
-    color: #fff;
-    font-size: 1rem;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-default);
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    font-size: 15px;
     outline: none;
+    transition: var(--transition-fast);
+    text-align: center;
+    letter-spacing: 0.1em;
+}
+
+#auth-password::placeholder {
+    color: var(--text-muted);
+    letter-spacing: 0;
 }
 
 #auth-password:focus {
-    border-color: #666;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.04);
 }
 
 #auth-submit {
-    padding: 10px;
-    background: #fff;
-    color: #000;
+    padding: 12px;
+    background: var(--text-primary);
+    color: var(--text-inverse);
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    font-weight: bold;
-    font-size: 1rem;
-    transition: opacity 0.2s;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transition: var(--transition-fast);
 }
 
 #auth-submit:hover {
-    opacity: 0.9;
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+#auth-submit:active {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 #auth-error {
-    color: #ff4444;
-    font-size: 0.9rem;
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
     min-height: 1.2em;
 }
 
 #auth-error.hidden {
     display: none;
+}
+
+/* ============================================================
+   TYPOGRAPHY — HOW TO USE TAB
+   ============================================================ */
+#content-how-to .card {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+#content-how-to h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+    text-transform: none;
+}
+
+/* ============================================================
+   FLOATING ACTION BUTTON (FAB)
+   ============================================================ */
+.fab {
+    position: fixed;
+    right: 24px;
+    bottom: 80px; /* Positioned above the dock */
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: var(--accent);
+    color: var(--text-inverse);
+    border: none;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    z-index: 100000; /* Should be on top of everything, same as auth */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    transition: var(--transition-base);
+}
+
+.fab:hover {
+    transform: translateY(-4px) scale(1.05);
+    background-color: #ffc233; /* Slightly brighter gold */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.fab:active {
+    transform: translateY(0) scale(0.95);
+    background-color: #e6a300; /* Slightly darker gold */
+}
+
+.fab:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 181, 0, 0.3), 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+    body {
+        padding: 0 12px 80px 12px;
+    }
+
+    .tab-button {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .interactive-card {
+        padding: 16px;
+    }
+
+    .card-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .auth-box {
+        width: 90vw;
+        padding: 32px 24px;
+    }
+
+    #focus-text {
+        font-size: clamp(2.5rem, 16vw, 8rem);
+    }
+
+    .card-action-btn {
+        padding: 7px 12px;
+        font-size: 11px;
+    }
 }
