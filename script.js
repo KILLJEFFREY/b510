@@ -286,25 +286,33 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') audioCtx.resume();
 
-            const playTone = (freq, start, duration) => {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(freq, start);
-                gain.gain.setValueAtTime(0, start);
-                gain.gain.linearRampToValueAtTime(0.15, start + 0.01);
-                gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start(start);
-                osc.stop(start + duration);
-            };
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const nowCtx = audioCtx.currentTime;
 
-            const startTime = audioCtx.currentTime;
-            playTone(880, startTime, 0.1);
-            playTone(1100, startTime + 0.08, 0.15);
+            // Klaxon settings: Harsh Sawtooth
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(250, nowCtx);
+            
+            // The Wail: 250Hz -> 450Hz -> 250Hz -> 450Hz
+            osc.frequency.exponentialRampToValueAtTime(450, nowCtx + 0.5);
+            osc.frequency.exponentialRampToValueAtTime(250, nowCtx + 1.0);
+            osc.frequency.exponentialRampToValueAtTime(450, nowCtx + 1.5);
+            osc.frequency.exponentialRampToValueAtTime(250, nowCtx + 2.0);
+
+            // Gain Envelope (avoid clicks, high priority volume)
+            gain.gain.setValueAtTime(0, nowCtx);
+            gain.gain.linearRampToValueAtTime(0.3, nowCtx + 0.1);
+            gain.gain.linearRampToValueAtTime(0.3, nowCtx + 1.9);
+            gain.gain.exponentialRampToValueAtTime(0.0001, nowCtx + 2.0);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(nowCtx);
+            osc.stop(nowCtx + 2.0);
         } catch (e) {
-            console.warn('[SPAb510] Audio synthesis failed:', e);
+            console.warn('[SPAb510] Klaxon synthesis failed:', e);
         }
     }
 
