@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initApp() {
         try {
             buildAllGrids();
+            initAudioSystem();
             // Initialize premium icons
             if (window.lucide) {
                 window.lucide.createIcons();
@@ -170,6 +171,10 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(getRecallKey(cardId, 'level'), String(nextLevel));
         localStorage.setItem(getRecallKey(cardId, 'nextAt'), String(nextAt));
         
+        if (recallRuntimeState[cardId]) {
+            recallRuntimeState[cardId].hasAlarmed = false;
+        }
+
         updateCardRecallUI(cardId);
     }
 
@@ -178,6 +183,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const nextAt = Date.now() + (RECALL_INTERVALS[0] * 1000);
         localStorage.setItem(getRecallKey(cardId, 'level'), '0');
         localStorage.setItem(getRecallKey(cardId, 'nextAt'), String(nextAt));
+        
+        if (recallRuntimeState[cardId]) {
+            recallRuntimeState[cardId].hasAlarmed = false;
+        }
 
         updateCardRecallUI(cardId);
     }
@@ -208,6 +217,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (diff <= 0) {
             badge.textContent = "READY";
             badge.className   = "recall-status ready";
+            
+            // Audio Alarm Trigger
+            if (!recallRuntimeState[cardId]) recallRuntimeState[cardId] = { hasAlarmed: false };
+            if (!recallRuntimeState[cardId].hasAlarmed) {
+                playRecallAlarm();
+                recallRuntimeState[cardId].hasAlarmed = true;
+            }
         } else {
             badge.textContent = `Recall in ${formatTimeRemaining(diff)}`;
             badge.className   = "recall-status waiting";
@@ -225,6 +241,72 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     startGlobalRecallTick();
+
+    // ============================================================
+    // AUDIO ALARM SYSTEM
+    // ============================================================
+    let audioCtx = null;
+    let lastAlarmTime = 0;
+    let isMuted = localStorage.getItem('spa_audio_muted') === 'true';
+    const recallRuntimeState = {}; // cardId -> { hasAlarmed: bool }
+
+    function initAudioSystem() {
+        const toggleBtn = document.getElementById('audio-toggle');
+        if (!toggleBtn) return;
+
+        function updateToggleUI() {
+            toggleBtn.className = isMuted ? 'muted' : '';
+            toggleBtn.innerHTML = isMuted ? '<i data-lucide="volume-x"></i>' : '<i data-lucide="volume-2"></i>';
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        toggleBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            localStorage.setItem('spa_audio_muted', String(isMuted));
+            updateToggleUI();
+            
+            // Resume context on user gesture
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+        });
+
+        updateToggleUI();
+    }
+
+    function playRecallAlarm() {
+        if (isMuted) return;
+
+        // Throttling: Max one alarm every 2 seconds
+        const now = Date.now();
+        if (now - lastAlarmTime < 2000) return;
+        lastAlarmTime = now;
+
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const playTone = (freq, start, duration) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, start);
+                gain.gain.setValueAtTime(0, start);
+                gain.gain.linearRampToValueAtTime(0.15, start + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(start);
+                osc.stop(start + duration);
+            };
+
+            const startTime = audioCtx.currentTime;
+            playTone(880, startTime, 0.1);
+            playTone(1100, startTime + 0.08, 0.15);
+        } catch (e) {
+            console.warn('[SPAb510] Audio synthesis failed:', e);
+        }
+    }
 
 
     // ============================================================
