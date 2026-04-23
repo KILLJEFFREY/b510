@@ -912,16 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.handleCardClick(e.target);
         });
 
-        grid.addEventListener('keydown', (e) => {
-            if (e.code !== 'Space') return;
-            const card = e.target.closest('.interactive-card');
-            if (!card || card !== e.target) return;
-            const state = cardStates.get(card);
-            if (!state) return;
-            e.preventDefault();
-            setActiveCard(card.id);
-            state.revealNext();
-        });
+        // Space is now handled globally on document; no per-grid keydown needed.
 
         grid.addEventListener('focusin', (e) => {
             const card = e.target.closest('.interactive-card');
@@ -1571,6 +1562,53 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // FAB listeners are now attached inside initDock() to dockReveal.
+
+    // ============================================================
+    // GLOBAL KEYBOARD (desktop)
+    // ============================================================
+    // Space → reveal next (same as dock REVEAL / FAB)
+    // ArrowLeft / ArrowRight → jump to prev / next card in the active tab
+    document.addEventListener('keydown', (e) => {
+        // Let the drill overlay handle its own keys.
+        if (!focusOverlay.classList.contains('hidden')) return;
+        // Skip while auth or settings are open.
+        if (!authOverlay.classList.contains('hidden')) return;
+        if (!settingsModal.classList.contains('hidden')) return;
+        // Skip when typing into an input / textarea / contenteditable.
+        const t = e.target;
+        if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA'
+                  || t.isContentEditable)) return;
+        // Ignore when modifier keys are held (let browser do its thing).
+        if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+        if (e.code === 'Space') {
+            e.preventDefault();
+            triggerGlobalAdvance();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+            e.preventDefault();
+            navigateCards(e.key === 'ArrowRight' ? 1 : -1);
+        }
+    });
+
+    function navigateCards(dir) {
+        const panel = document.querySelector('.tab-content.active');
+        if (!panel) return;
+        const cards = Array.from(panel.querySelectorAll('.interactive-card'));
+        if (cards.length === 0) return;
+
+        let current = activeCardId && document.getElementById(activeCardId);
+        if (!current || !cards.includes(current)) {
+            // No active card in this tab — seed at one end.
+            current = dir > 0 ? cards[0] : cards[cards.length - 1];
+        } else {
+            const i = cards.indexOf(current);
+            const j = Math.max(0, Math.min(cards.length - 1, i + dir));
+            current = cards[j];
+        }
+        focusNoScroll(current);
+        current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setActiveCard(current.id);
+    }
 
     // ============================================================
     // BOOT
