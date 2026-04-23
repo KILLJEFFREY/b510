@@ -6,29 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SPAb510 — Precision verbatim recall trainer for B510 driving certification. Master the 5 Smith System keys, 10 habits, pre-trip procedure, and more.">
     <title>SPAb510 — B510 Precision Recall Trainer</title>
-    <link rel="stylesheet" href="index.css?v=13">
+    <!-- Auth hash (SHA-256). Not a real security boundary — keeps plaintext out of source. -->
+    <meta name="spab510-auth-hash" content="fbb6337a2ba75d089e1ebff3ed2f65bf831b74393c9a4867115f047678b0d639">
+    <link rel="stylesheet" href="index.css?v=17">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
 <body>
     <div class="app-container">
-        <header class="header">
-            <nav class="tabs-nav" role="tablist" aria-label="Study sections">
-                <button class="tab-button active" data-tab="how-to" role="tab" aria-selected="true" aria-controls="content-how-to">How to use</button>
-                <button class="tab-button" data-tab="5s" role="tab" aria-selected="false" aria-controls="content-5s">5 Keys</button>
-                <button class="tab-button" data-tab="10s" role="tab" aria-selected="false" aria-controls="content-10s">10 Habits</button>
-                <button class="tab-button tab-button--disabled" data-tab="pre-trip" role="tab" aria-selected="false" aria-disabled="true" disabled>Pre-Trip</button>
-                <button class="tab-button tab-button--disabled" data-tab="start-stop" role="tab" aria-selected="false" aria-disabled="true" disabled>Start/Stop</button>
-                <button class="tab-button tab-button--disabled" data-tab="timms" role="tab" aria-selected="false" aria-disabled="true" disabled>TIMMS</button>
-                <button class="tab-button tab-button--disabled" data-tab="driver-drill" role="tab" aria-selected="false" aria-disabled="true" disabled>Driver Drill</button>
-                <div class="tab-indicator"></div>
-            </nav>
-            <button id="audio-toggle" title="Toggle audio alarms" aria-label="Toggle audio alarms">
-                <i data-lucide="volume-2"></i>
-            </button>
-        </header>
-
         <main class="content-area">
+
+            <!-- Due-today rollup (populated dynamically) -->
+            <div id="due-rollup" class="due-rollup hidden" aria-live="polite"></div>
 
             <!-- How To Use Tab -->
             <section id="content-how-to" class="tab-content active" role="tabpanel">
@@ -62,12 +51,12 @@
                         <li>Day 30 retention audit</li>
                     </ul>
 
-                    <h3>9. Rapid Reactivation Protocol (Manual/Drill)</h3>
+                    <h3>8. Rapid Reactivation Protocol (Manual/Drill)</h3>
                     <p>For high-intensity verbatim memorization, use the <strong>Recall Scheduler</strong>. Each clean drill session (0 struggle words) advances the card through a graduated sequence: 1s, 5s, 10s, 30s, 1m, 2m, 5m, 10m, 20m, 30m. If you recall a card with struggle words, the schedule resets to ensure stability.</p>
                     <p>Wait for the <strong>UPS Yellow READY</strong> alert before re-testing a unit.</p>
                     <p>Spacing impacts consolidation more than session length.</p>
 
-                    <h3>8. Add Interference to Stress-Proof Recall</h3>
+                    <h3>9. Add Interference to Stress-Proof Recall</h3>
                     <p>Enable <strong>Interference Mode</strong> in Drill view to add cognitive micro-tasks between each word reveal. Choose from Level 1 (gentle), Level 2 (moderate), or Chaos (random 1–15 words). This simulates the cognitive load of real-world driving recall scenarios.</p>
 
                     <hr>
@@ -118,8 +107,8 @@
     </div>
 
     <!-- Focus / Drill Mode Overlay -->
-    <div id="focus-overlay" class="hidden" tabindex="-1">
-        <div id="focus-counter">1 / 1</div>
+    <div id="focus-overlay" class="hidden" tabindex="-1" role="region" aria-label="Drill mode">
+        <div id="focus-counter" role="status" aria-live="polite" aria-atomic="true">1 / 1</div>
         <div id="interference-toggle-container" aria-label="Interference frequency">
             <span>Interference</span>
             <div class="freq-toggle-group">
@@ -140,9 +129,16 @@
                 </label>
             </div>
         </div>
-        <button id="focus-close-btn" class="focus-close-btn" aria-label="Close drill mode">✕ Close</button>
+        <button id="focus-close-btn" class="focus-close-btn" aria-label="Close drill mode"><i data-lucide="x"></i><span>Close</span></button>
+        <button id="focus-mute-btn" class="focus-mute-btn" aria-label="Mute audio alarms" aria-pressed="false" title="Mute audio alarms"><i data-lucide="volume-2"></i></button>
         <div id="focus-content">
-            <div id="focus-text"></div>
+            <div id="focus-text" role="status" aria-live="assertive" aria-atomic="true"></div>
+            <div id="focus-summary" class="hidden" role="region" aria-label="Session summary"></div>
+            <div id="focus-verify" class="hidden">
+                <div id="focus-verify-prev" class="verify-prev"></div>
+                <input type="text" id="focus-verify-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Type the next word…" aria-label="Type the next word">
+                <div id="focus-verify-hint" class="verify-hint"></div>
+            </div>
         </div>
         <div id="interference-modal" class="hidden" role="dialog" aria-modal="true">
             <div id="interference-prompt"></div>
@@ -162,16 +158,72 @@
         </div>
     </div>
 
-    <!-- Floating Action Button — reveal next word -->
-    <button id="fab-reveal" class="fab hidden" aria-label="Reveal next word" title="Reveal next word">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-step-forward">
-            <path d="M10.029 4.285A2 2 0 0 0 7 6v12a2 2 0 0 0 3.029 1.715l9.997-5.998a2 2 0 0 0 .003-3.432z"></path>
-            <path d="M3 4v16"></path>
-        </svg>
-    </button>
+    <!-- Two-tier Dock -->
+    <div id="dock" class="dock hidden" aria-label="Study dock">
+        <div id="dock-upper" class="dock-upper" role="toolbar" aria-label="Card actions">
+            <button id="dock-settings" class="dock-icon-btn" aria-label="Settings" title="Settings"><i data-lucide="settings"></i></button>
+            <div id="dock-label" class="dock-label" aria-live="polite">Tap a card to begin</div>
+            <div id="dock-actions" class="dock-actions">
+                <button class="dock-action" data-action="show">Show</button>
+                <button class="dock-action" data-action="drill">Drill</button>
+                <button class="dock-action" data-action="struggles">Struggles</button>
+                <button class="dock-action" data-action="verify">Verify</button>
+            </div>
+            <button id="dock-reverse" class="dock-icon-btn dock-reverse" aria-label="Toggle reverse drill" aria-pressed="false" title="Reverse drill"><i data-lucide="rotate-ccw"></i></button>
+            <button id="dock-reveal" class="dock-reveal" aria-label="Reveal next word" title="Reveal next word"><i data-lucide="play"></i></button>
+            <button id="dock-mute" class="dock-icon-btn" aria-label="Mute audio alarms" aria-pressed="false" title="Mute audio alarms"><i data-lucide="volume-2"></i></button>
+        </div>
+        <nav id="dock-lower" class="dock-lower" role="tablist" aria-label="Study sections">
+            <button class="tab-button active" data-tab="how-to" role="tab" aria-selected="true" aria-controls="content-how-to">How</button>
+            <button class="tab-button" data-tab="5s" role="tab" aria-selected="false" aria-controls="content-5s">5 Keys</button>
+            <button class="tab-button" data-tab="10s" role="tab" aria-selected="false" aria-controls="content-10s">10 Habits</button>
+            <button class="tab-button tab-button--disabled" data-tab="pre-trip" role="tab" aria-selected="false" aria-disabled="true" disabled>Pre-Trip</button>
+            <button class="tab-button tab-button--disabled" data-tab="start-stop" role="tab" aria-selected="false" aria-disabled="true" disabled>Start/Stop</button>
+            <button class="tab-button tab-button--disabled" data-tab="timms" role="tab" aria-selected="false" aria-disabled="true" disabled>TIMMS</button>
+            <button class="tab-button tab-button--disabled" data-tab="driver-drill" role="tab" aria-selected="false" aria-disabled="true" disabled>Drill</button>
+            <button id="dock-due" class="dock-due hidden" aria-label="Jump to due cards">Due <span id="dock-due-count">0</span></button>
+        </nav>
+    </div>
 
-    <script src="data.js?v=13"></script>
-    <script src="script.js?v=13"></script>
+    <!-- Settings -->
+    <div id="settings-modal" class="settings-modal hidden" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+        <div class="settings-box">
+            <div class="settings-head">
+                <h2 id="settings-title">Settings</h2>
+                <button id="settings-close" aria-label="Close settings"><i data-lucide="x"></i></button>
+            </div>
+            <div class="settings-body">
+                <label class="settings-row">
+                    <span>Audio alarms</span>
+                    <input type="checkbox" id="settings-alarms">
+                </label>
+                <label class="settings-row">
+                    <span>Default interference</span>
+                    <select id="settings-interference">
+                        <option value="0">Off</option>
+                        <option value="1">Level 1</option>
+                        <option value="2">Level 2</option>
+                        <option value="3">Chaos</option>
+                    </select>
+                </label>
+                <div class="settings-row settings-row--col">
+                    <span>Progress</span>
+                    <div class="settings-btn-row">
+                        <button id="settings-export" class="settings-action">Export</button>
+                        <button id="settings-import" class="settings-action">Import</button>
+                        <button id="settings-reset" class="settings-action settings-danger">Reset all</button>
+                        <input type="file" id="settings-import-file" accept="application/json" hidden>
+                    </div>
+                </div>
+                <div class="settings-foot">
+                    <button id="settings-logout" class="settings-action">Log out</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js?v=17"></script>
+    <script src="script.js?v=17"></script>
 </body>
 
 </html>

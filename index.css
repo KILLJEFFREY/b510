@@ -80,7 +80,7 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     margin: 0;
-    padding: 80px 20px 90px 20px;
+    padding: 0 20px;
     touch-action: manipulation;
     font-size: 16px;
     line-height: 1.6;
@@ -218,7 +218,7 @@ button {
    CONTENT AREA
    ============================================================ */
 .content-area {
-    padding-top: 28px;
+    padding-top: 8px;
 }
 
 .tab-content {
@@ -1113,3 +1113,553 @@ button {
         font-size: 11px;
     }
 }
+/* ============================================================
+   v15 additions — due rollup, settings, session summary, verify
+   ============================================================ */
+
+/* Due-today rollup */
+.due-rollup {
+    margin: 0 auto 16px;
+    max-width: 1200px;
+    padding: 12px 16px;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-sm, 4px);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+.due-rollup.hidden { display: none; }
+.due-rollup h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+.due-rollup ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.due-rollup li button {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: var(--radius-sm, 4px);
+    font: inherit;
+    cursor: pointer;
+    min-height: 36px;
+}
+.due-rollup li button:hover,
+.due-rollup li button:focus-visible {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-border);
+    outline: none;
+}
+
+/* Settings button — fixed near FAB */
+.settings-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    font-size: 22px;
+    cursor: pointer;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.settings-btn.hidden { display: none; }
+.settings-btn:hover,
+.settings-btn:focus-visible {
+    background: var(--bg-card-hover);
+    border-color: var(--accent-border);
+    outline: none;
+}
+
+/* Settings modal */
+.settings-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+.settings-modal.hidden { display: none; }
+.settings-box {
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 420px;
+    max-height: 90vh;
+    overflow-y: auto;
+    color: var(--text-primary);
+}
+.settings-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.settings-head h2 { margin: 0; font-size: 18px; }
+.settings-head button {
+    background: transparent;
+    border: 0;
+    color: var(--text-secondary);
+    font-size: 20px;
+    cursor: pointer;
+    min-width: 40px;
+    min-height: 40px;
+}
+.settings-body { padding: 16px 20px; }
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    gap: 12px;
+    min-height: 44px;
+}
+.settings-row--col {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+}
+.settings-row select {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 1px solid var(--border-default);
+    padding: 6px 8px;
+    border-radius: var(--radius-sm, 4px);
+    min-height: 36px;
+}
+.settings-row input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+}
+.settings-btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.settings-action {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm, 4px);
+    cursor: pointer;
+    font: inherit;
+    min-height: 40px;
+    flex: 1 1 auto;
+}
+.settings-danger {
+    border-color: rgba(239,68,68,0.4);
+    color: #fca5a5;
+}
+.settings-foot {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+/* Focus mute toggle — bottom-left in overlay */
+.focus-mute-btn {
+    position: absolute;
+    top: 20px;
+    right: 140px;
+    background: transparent;
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+.focus-mute-btn[aria-pressed="true"] { opacity: 0.4; }
+
+/* Session summary inside focus overlay */
+#focus-summary {
+    max-width: 560px;
+    padding: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
+    border-radius: 8px;
+    text-align: left;
+    color: var(--text-primary);
+    font-size: 15px;
+    line-height: 1.5;
+}
+#focus-summary.hidden { display: none; }
+#focus-summary h2 {
+    margin: 0 0 12px;
+    font-size: 18px;
+    color: var(--accent);
+}
+#focus-summary .summary-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+#focus-summary .summary-row:last-child { border-bottom: 0; }
+#focus-summary .summary-label { color: var(--text-secondary); }
+#focus-summary .chronic-list {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+#focus-summary .chronic-word {
+    background: var(--danger-dim);
+    color: #fca5a5;
+    padding: 3px 8px;
+    border-radius: var(--radius-sm, 4px);
+    font-family: var(--font-mono);
+    font-size: 13px;
+}
+
+/* Verify mode */
+#focus-verify {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    padding: 20px;
+}
+#focus-verify.hidden { display: none; }
+.verify-prev {
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 3vw, 1.4rem);
+    max-width: 90vw;
+    text-align: center;
+    line-height: 1.4;
+}
+#focus-verify-input {
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    border: 2px solid var(--border-default);
+    border-radius: 6px;
+    padding: 14px 18px;
+    font-size: clamp(1.2rem, 5vw, 2rem);
+    font-family: var(--font-mono);
+    min-width: min(400px, 80vw);
+    text-align: center;
+}
+#focus-verify-input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+#focus-verify-input.correct { border-color: var(--success); }
+#focus-verify-input.wrong   { border-color: var(--danger); }
+.verify-hint {
+    color: var(--text-muted);
+    font-size: 13px;
+    min-height: 18px;
+}
+.verify-hint.wrong { color: var(--danger); }
+
+/* Empty state */
+.grid-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+/* Struggle-drill button visual parity */
+.card-action-btn.struggle-btn { border-color: rgba(239,68,68,0.3); }
+.card-action-btn.struggle-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Mobile tweaks */
+@media (max-width: 768px) {
+    .focus-mute-btn { right: 96px; top: 12px; width: 40px; height: 40px; }
+    .settings-btn { width: 44px; height: 44px; bottom: 16px; left: 16px; }
+    .due-rollup { font-size: 12px; padding: 10px 12px; }
+}
+
+/* ============================================================
+   v16 — Two-tier dock
+   ============================================================ */
+
+:root {
+    --dock-lower-h: 52px;
+    --dock-upper-h: 64px;
+    --dock-total-h: calc(var(--dock-lower-h) + var(--dock-upper-h));
+    --dock-safe: env(safe-area-inset-bottom, 0px);
+}
+
+/* Push content above the dock so nothing hides behind it. */
+body.dock-ready .content-area {
+    padding-bottom: calc(var(--dock-total-h) + var(--dock-safe) + 24px);
+}
+
+/* Dock container — fixed to bottom */
+.dock {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 950;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border-default);
+    padding-bottom: var(--dock-safe);
+    box-shadow: 0 -8px 24px rgba(0,0,0,0.35);
+}
+.dock.hidden { display: none; }
+
+/* Upper tier (action bar) — hidden by default, slides up when a card is active */
+.dock-upper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    height: var(--dock-upper-h);
+    border-bottom: 1px solid var(--border-subtle);
+    overflow: hidden;
+    transform: translateY(100%);
+    transition: transform 180ms ease-out, opacity 180ms ease-out;
+    opacity: 0;
+    pointer-events: none;
+}
+body[data-dock-active="true"] .dock-upper {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.dock-label {
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 4px;
+}
+body:not([data-dock-active="true"]) .dock-label {
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* Icon chip buttons */
+.dock-icon-btn {
+    background: transparent;
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    padding: 0;
+}
+.dock-icon-btn:hover,
+.dock-icon-btn:focus-visible {
+    background: var(--bg-card-hover);
+    outline: none;
+    border-color: var(--accent-border);
+}
+.dock-icon-btn[aria-pressed="true"] {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+.dock-reverse[aria-pressed="true"] {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Contextual action pills */
+.dock-actions {
+    display: flex;
+    gap: 4px;
+    flex: 0 1 auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+.dock-actions::-webkit-scrollbar { display: none; }
+.dock-action {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-default);
+    color: var(--text-primary);
+    padding: 8px 12px;
+    border-radius: 18px;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+    min-height: 36px;
+    white-space: nowrap;
+}
+.dock-action:hover,
+.dock-action:focus-visible {
+    border-color: var(--accent-border);
+    outline: none;
+}
+.dock-action:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* REVEAL — primary, wide, center-weight */
+.dock-reveal {
+    background: var(--accent);
+    color: var(--text-inverse);
+    border: 0;
+    border-radius: 28px;
+    padding: 0 24px;
+    height: 48px;
+    min-width: 72px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.dock-reveal:hover,
+.dock-reveal:focus-visible {
+    outline: none;
+    filter: brightness(1.08);
+}
+.dock-reveal:active { transform: translateY(1px); }
+
+/* Ready indicator: subtle opacity pulse, no glow. */
+@keyframes dock-pulse {
+    0%, 100% { filter: none; }
+    50%      { filter: brightness(1.15); }
+}
+body[data-dock-ready="true"] .dock-reveal {
+    animation: dock-pulse 1.6s ease-in-out infinite;
+}
+
+/* Lower tier (nav) — horizontal scroll snap */
+.dock-lower {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: var(--dock-lower-h);
+    padding: 0 8px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+}
+.dock-lower::-webkit-scrollbar { display: none; }
+
+.dock-lower .tab-button {
+    scroll-snap-align: center;
+    flex: 0 0 auto;
+    background: transparent;
+    border: 0;
+    color: var(--text-secondary);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm, 4px);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    min-height: 40px;
+    white-space: nowrap;
+}
+.dock-lower .tab-button.active {
+    color: var(--accent);
+    background: var(--accent-dim);
+}
+.dock-lower .tab-button:hover,
+.dock-lower .tab-button:focus-visible {
+    color: var(--text-primary);
+    outline: none;
+}
+.dock-lower .tab-button--disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* Due pill */
+.dock-due {
+    margin-left: auto;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    color: var(--accent);
+    padding: 6px 12px;
+    border-radius: 16px;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    min-height: 32px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 0 auto;
+}
+.dock-due.hidden { display: none; }
+.dock-due:hover,
+.dock-due:focus-visible {
+    background: var(--accent);
+    color: var(--text-inverse);
+    outline: none;
+}
+
+/* Hide the drill overlay dock when focus mode is active */
+body.focus-mode-open .dock { display: none; }
+
+/* Old floating bits get removed via JS deletion — belt-and-suspenders CSS hide */
+#fab-reveal, .fab,
+#settings-btn.settings-btn,
+.header, .tabs-nav {
+    display: none !important;
+}
+
+/* Mobile tuning */
+@media (max-width: 600px) {
+    :root {
+        --dock-upper-h: 60px;
+        --dock-lower-h: 48px;
+    }
+    .dock-label {
+        display: none; /* reclaim horizontal space on phone */
+    }
+    .dock-action { padding: 7px 10px; font-size: 11px; }
+    .dock-reveal { min-width: 56px; padding: 0 16px; font-size: 16px; }
+    .dock-icon-btn { width: 36px; height: 36px; font-size: 15px; }
+    .dock-lower .tab-button { padding: 8px 10px; font-size: 12px; }
+    .due-rollup { display: none; } /* rollup superseded by Due pill */
+}
+
+/* Auth overlay already covers the dock via z-index — belt-and-suspenders */
+#auth-overlay { z-index: 2000; }
